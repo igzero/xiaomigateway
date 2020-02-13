@@ -69,6 +69,8 @@ light
     sid
         (string)(Required)
         The SID your Aqara LED Light Bulb.
+        SIDs can be used without the suffix "lumi."
+        For example, "lumi.1234567890xxx" can be written as "123456789xxx"
     name
         (string)(Optional)
         The Name your Aqara LED Light Bulb
@@ -80,6 +82,8 @@ switch
     sid
         (string)(Required)
         The SID your Aqara Relay.
+        SIDs can be used without the suffix "lumi."
+        For example, "lumi.1234567890xxx" can be written as "123456789xxx"
     name
         (string)(Optional)
         The Name your Aqara Relay.
