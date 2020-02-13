@@ -1,0 +1,8 @@
+{
+  "domain": "xiaomigateway",
+  "name": "XiaomiGateway Load Platform (Aqara LED Bulb, Aqara Relay, XiaomiGateway FM Radio",
+  "documentation": "https://github.com/igzero/xiaomigateway/blob/master/README.md",
+  "dependencies": [],
+  "codeowners": ["ig.zero@rambler.ru"],
+  "requirements": ["python-miio>=0.3.7"]
+}
