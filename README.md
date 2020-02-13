@@ -13,7 +13,8 @@ Allows you to manage the following devices connected to the XiaomiGateway:
 To enable "xiaomigateway" in your installation, the following instruction must be followed:
 1. Copy directory "xiaomigateway" to you custom_component directory
 2. Add to your configuration.yaml file:
-========================== configuration.yaml ==================================
+
+== configuration.yaml ==
 
 xiaomigateway:
     host: 192.168.0.1
@@ -42,7 +43,7 @@ xiaomigateway:
                 [527782005],
                 [1023,"http:\/\/192.168.0.254\/527782006.m3u8"]
             ]
-========================== End configuration.yaml ==============================
+== End configuration.yaml ==
 
 CONFIGURATION VARIABLES
 
