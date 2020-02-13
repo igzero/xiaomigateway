@@ -85,7 +85,7 @@ switch
         
 media_player
     (map) (Required)
-    Only element.
+    Only element the XiaomiGateway FM Radio player.
 
     name
         (string)(Optional)
