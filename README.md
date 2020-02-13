@@ -63,7 +63,7 @@ token
     The API token of your XiaomiGateway
     
 light
-    (map) (Required)
+    (map) (Optional)
     A list of lights to set up.
 
     sid
@@ -76,7 +76,7 @@ light
         The Name your Aqara LED Light Bulb
         
 switch
-    (map) (Required)
+    (map) (Optional)
     A list of relays to set up.
 
     sid
@@ -89,7 +89,7 @@ switch
         The Name your Aqara Relay.
         
 media_player
-    (map) (Required)
+    (map) (Optional)
     Only element the XiaomiGateway FM Radio player.
 
     name
