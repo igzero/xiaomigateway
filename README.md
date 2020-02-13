@@ -8,6 +8,7 @@ Allows you to manage the following devices connected to the XiaomiGateway:
 - XiaomiGateway FM Radio.
   Support: Turn on/off, sound control (including MUTE), next station, previous station,
   flexible setting of stations, including favorites from "MiHome", select stations from the list.
+  Simply add your various audio streams in M3U8 format, without using any tricks with MiHome
 
 
 To enable "xiaomigateway" in your installation, the following instruction must be followed:
