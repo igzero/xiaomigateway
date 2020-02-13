@@ -47,12 +47,14 @@ xiaomigateway:
 
 CONFIGURATION VARIABLES
 
+
 host
     (string) (Required)
     The host/IP address the of gateway.
 token
     (string) (Required)
     The API token of your XiaomiGateway
+    
 light
     (map) (Required)
     A list of lights to set up.
@@ -63,6 +65,7 @@ light
     name
         (string)(Optional)
         The Name your Aqara LED Light Bulb
+        
 switch
     (map) (Required)
     A list of relays to set up.
@@ -73,6 +76,7 @@ switch
     name
         (string)(Optional)
         The Name your Aqara Relay.
+        
 media_player
     (map) (Required)
     Only element.
