@@ -98,5 +98,4 @@ media_player
                 link to the broadcast stream of the radio station in M3U8 format.
                 Has the URL type.
 
-
 (C) 2020 Igor A. Putintsev  ig.zero@rambler.ru
