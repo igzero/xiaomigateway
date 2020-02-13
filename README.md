@@ -1,5 +1,5 @@
 # xiaomigateway
-The HomeAssiatant custom component. Uses python-miio package ( Vers.  >= 0.3.7 ) (https://github.com/rytilahti/python-miio/)
+The HomeAssiatant custom component. Uses python-miio package ( Vers.  >= 0.3.7 ) (https://github.com/rytilahti/python-miio/).
 Allows you to manage the following devices connected to the XiaomiGateway:
 - Lamp "Aqara LED Light Bulb (ZNLDP12LM)." Identifier in "MiHome": 'lumi.light.aqcn02'.
   Supports brightness and color temperature control.
