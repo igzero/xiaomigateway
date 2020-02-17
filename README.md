@@ -19,7 +19,8 @@ To enable "xiaomigateway" in your installation, the following instruction must b
    cd /path_to_python-miio_dir
    patch -p1 < device.py.patch
 
-This is path for python-miio library,  parameter "sid" was added to give the \"sid\"-s of the children devices connected to the Xiaomi Gateway.   
+   This is path for python-miio library,  parameter "sid" was added to give the \"sid\"-s of the children devices connected
+   to the Xiaomi Gateway.   
 2. Copy directory "xiaomigateway" to you custom_component directory
 3. Add to your configuration.yaml file:
 
