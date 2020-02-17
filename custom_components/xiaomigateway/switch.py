@@ -227,7 +227,7 @@ class XiaomiGatewaySensorW(Entity):
         result = await self.hass.async_add_job(
             self._device.send, 'get_device_prop_exp', [[self._sid, "load_power"]])
         self._state=result[0][0]
-        today = ( datetime.datetime.now()
+        today = datetime.datetime.now()
         delta = today - self._data['yesterday']
         data['power_consum'] = round((data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
         data['power'] = self._state
