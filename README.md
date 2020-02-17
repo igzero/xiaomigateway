@@ -9,7 +9,7 @@ Allows you to manage the following devices connected to the XiaomiGateway:
   Support: Turn on/off, sound control (including MUTE), next station, previous station,
   flexible setting of stations, including favorites from "MiHome", select stations from the list.
   Because in the new version of firmware not working the command 
-  '"method":'specify_play_fm' "params": {"id": xxx,"type": 0,"url":"http://your_arbitrary_link/file.m3u8"'
+  '"method":'play_specify_fm' "params": {"id": xxx,"type": 0,"url":"http://your_arbitrary_link/file.m3u8"'
   The command is perceived, but the stream is not played. This capability is left, but performance is not guaranteed.
 
 
