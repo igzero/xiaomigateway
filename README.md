@@ -8,12 +8,18 @@ Allows you to manage the following devices connected to the XiaomiGateway:
 - XiaomiGateway FM Radio.
   Support: Turn on/off, sound control (including MUTE), next station, previous station,
   flexible setting of stations, including favorites from "MiHome", select stations from the list.
-  Simply add your various audio streams in M3U8 format, without using any tricks with MiHome
+  Because in the new version of firmware not working the command 
+  '"method":'specify_play_fm' "params": {"id": xxx,"type": 0,"url":"http://your_arbitrary_link/file.m3u8"'
+  The command is perceived, but the stream is not played. This capability is left, but performance is not guaranteed.
 
 
 To enable "xiaomigateway" in your installation, the following instruction must be followed:
-1. Copy directory "xiaomigateway" to you custom_component directory
-2. Add to your configuration.yaml file:
+1. Patch the python-miio (file device.py).
+   cd /path_to_python-miio_dir
+   patch -p1 < device.py.patch
+   This is path for python-miio library,  parameter "sid" was added to give the \"sid\"-s of the children devices connected to the Xiaomi Gateway.   
+2. Copy directory "xiaomigateway" to you custom_component directory
+3. Add to your configuration.yaml file:
 
 == configuration.yaml ==
 
