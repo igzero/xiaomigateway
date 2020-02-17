@@ -146,7 +146,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             if self._url is None:
                 result = await self._try_command(
                     "Turning the Gateway on failed.", self._device.send,
-                    'play_specify_fm', {"id":self._program,"type":0})
+                    'play_specify_fm', [self._program])
             else:
                 result = await self._try_command(
                     "Turning the Gateway on failed.", self._device.send,
@@ -171,11 +171,11 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             if self._url is None:
                 result = await self._try_command(
                     "Turning the Gateway on failed.", self._device.send,
-                    'play_specify_fm', {"id":self._program,"type":0})
+                    'play_specify_fm', [self._program])
             else:
-                    result = await self._try_command(
-                        "Turning the Gateway on failed.", self._device.send,
-                        'play_specify_fm', {"id":self._program,"url":self._url,"type":0})
+                result = await self._try_command(
+                    "Turning the Gateway on failed.", self._device.send,
+                    'play_specify_fm', {"id":self._program,"url":self._url,"type":0})
             if result:
                 self._state = STATE_ON
                 self.async_schedule_update_ha_state()
@@ -225,7 +225,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
         if self._url is None:
             result = await self._try_command(
                 "Turning the Gateway next failed.", self._device.send,
-                'play_specify_fm', {"id":self._program,"type":0})
+                'play_specify_fm', [self._program])
         else:
             result = await self._try_command(
                 "Turning the Gateway next failed.", self._device.send,
@@ -253,7 +253,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
         if self._url is None:
             result = await self._try_command(
                 "Turning the Gateway prev failed.", self._device.send,
-                'play_specify_fm', {"id":self._program,"type":0})
+                'play_specify_fm', [self._program])
         else:
             result = await self._try_command(
                 "Turning the Gateway prev failed.", self._device.send,
