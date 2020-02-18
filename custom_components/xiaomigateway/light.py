@@ -134,8 +134,9 @@ class XiaomiGatewayLight(Light):
                 'set_bright', [brightness],self._sid)
             if result:
                 brightness = 0
-                result = await self.hass.async_add_job(
-                    self._device.send, 'get_bright', None, self._sid)
+#                result = await self.hass.async_add_job(
+#                    self._device.send, 'get_bright', None, self._sid)
+                result = self._device.send('get_bright', None, self._sid)
 
                 brightness = result[0]
                 if brightness > 0 and brightness <= 100:

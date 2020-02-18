@@ -205,7 +205,7 @@ def async_setup(hass, config):
                         else:
 # Else choise opened socket
                             hass.data[DOMAIN]['light']['device'].append(light_device)
-                    except DeviceException light_exc:
+                    except DeviceException as light_exc:
                         _LOGGER.error("Error open socket:",light_exc)
                 i = i + 1
 
