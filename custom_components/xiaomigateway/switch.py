@@ -219,7 +219,7 @@ class XiaomiGatewaySensorW(Entity):
         """Return the unit of measurement."""
         return POWER_WATT
 
-    async def update(self):
+    async def async_update(self):
         """
         Fetch new state data for the sensor.
         This is the only method that should fetch new data for Home Assistant.
