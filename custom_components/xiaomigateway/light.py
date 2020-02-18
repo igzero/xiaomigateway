@@ -42,9 +42,10 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
 
     devices=[]
     i = 0
-    device = hass.data[DOMAIN]['device']
+#    device = hass.data[DOMAIN]['device']
     for sid in hass.data[DOMAIN]['light']['sid']:
         name = hass.data[DOMAIN]['light']['name'][i]
+        device = hass.data[DOMAIN]['light']['device'][i]
         devices.append(XiaomiGatewayLight(device, name, sid))
         i = i + 1
     if len(devices) > 0:

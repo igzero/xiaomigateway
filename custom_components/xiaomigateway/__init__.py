@@ -105,8 +105,8 @@ def async_setup(hass, config):
         hass.data[DOMAIN] = {}
         hass.data[DOMAIN]['device'] = None
         hass.data[DOMAIN]['sid'] = []
-        hass.data[DOMAIN]['light'] = {"name":[], "sid":[]}
-        hass.data[DOMAIN]['switch'] = {"name":[], "sid":[]}
+        hass.data[DOMAIN]['light'] = {"name":[], "sid":[], "device":[]}
+        hass.data[DOMAIN]['switch'] = {"name":[], "sid":[], "device":[]}
         hass.data[DOMAIN]['radio'] = {"name":None, "source_list":[], "program_list":[]}
         hass.data[DOMAIN]['power'] = {}
     else:
@@ -185,13 +185,28 @@ def async_setup(hass, config):
                     if components.count('light') == 0:
                         _LOGGER.debug("Add Aqara LED Bulb %s",sid)
                         components.append('light')
+# Add sid
                     hass.data[DOMAIN]['light']['sid'].append(sid)
                     name = config[DOMAIN]['light'][i].get(CONF_NAME,None)
                     if name is None:
                         name = DEFAULT_NAME_LIGHT + "." + sid
+# Add name
                     if hass.data[DOMAIN]['light']['name'].count(name) > 0:
                         name = name + "." + sid
                     hass.data[DOMAIN]['light']['name'].append(name)
+# Create socket for each light
+                    try:
+                        light_device = Device(host, token)
+                        light_info = light_device.info()
+                        if light_info is None:
+# If socket not open, choise first opened socket (miio_device)
+                            _LOGGER.error("Device not ready")
+                            hass.data[DOMAIN]['light']['device'].append(miio_device)
+                        else:
+# Else choise opened socket
+                            hass.data[DOMAIN]['light']['device'].append(light_device)
+                    except DeviceException light_exc:
+                        _LOGGER.error("Error open socket:",light_exc)
                 i = i + 1
 
 # List of Switch
