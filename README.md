@@ -21,7 +21,21 @@ To enable "xiaomigateway" in your installation, the following instruction must b
    patch -p1 < device.py.patch
 
    This is path for python-miio library,  parameter "sid" was added to give the \"sid\"-s of the children devices connected
-   to the Xiaomi Gateway.   
+   to the Xiaomi Gateway.
+
+   Lifehack: In order not to apply this patch, after each system update, place the patched  PYTHON-MIIO package in the directory
+             /config (this is the directory where your configuration file for HOMEASSISTANT (configuration.yaml) is located)
+             The PYTHON-MIIO library will be loaded from the /config directory after the HOMEASSISTANT reboot
+
+   General case:
+   cp -r /General_path/miio /path_where_is_configuration_file
+
+   For HASSIO in docker:
+   docker exec -it homeassistant bash
+   # cp -r /usr/local/lib/python3.7/site-packages/miio /config
+   # exit
+   docker restart homeassistant
+
 2. Copy directory "xiaomigateway" to you custom_component directory
 3. Add to your configuration.yaml file:
 
