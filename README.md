@@ -32,8 +32,8 @@ To enable "xiaomigateway" in your installation, the following instruction must b
 
    For HASSIO in docker:
    docker exec -it homeassistant bash
-   \# cp -r /usr/local/lib/python3.7/site-packages/miio /config
-   \# exit
+   cp -r /usr/local/lib/python3.7/site-packages/miio /config
+   exit
    docker restart homeassistant
 
 2. Copy directory "xiaomigateway" to you custom_component directory
