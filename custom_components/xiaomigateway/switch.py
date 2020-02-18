@@ -224,13 +224,19 @@ class XiaomiGatewaySensorW(Entity):
         Fetch new state data for the sensor.
         This is the only method that should fetch new data for Home Assistant.
         """
-        result = await self.hass.async_add_job(
-            self._device.send, 'get_device_prop_exp', [[self._sid, "load_power"]])
-        self._state=result[0][0]
-        today = datetime.datetime.now()
-        delta = today - self._data['yesterday']
-        self._data['power_consum'] = round((data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
-        self._data['power'] = self._state
-        self._data['yesterday'] = today
-        POWER=self._state
-        _LOGGER.debug("Sensor POWER %.2f",POWER)
+        from miio import DeviceException
+
+        try:
+            result = await self.hass.async_add_job(
+                self._device.send, 'get_device_prop_exp', [[self._sid, "load_power"]])
+            self._state=result[0][0]
+            today = datetime.datetime.now()
+            delta = today - self._data['yesterday']
+            self._data['power_consum'] = round((data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
+            self._data['power'] = self._state
+            self._data['yesterday'] = today
+            POWER=self._state
+            _LOGGER.debug("Sensor POWER %.2f",POWER)
+        except DeviceException as ex:
+            _LOGGER.error("Got exception while fetching the state: %s", ex)
+
