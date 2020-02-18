@@ -7,6 +7,7 @@ import homeassistant.helpers.config_validation as cv
 import logging
 import voluptuous as vol
 import asyncio
+import datetime
 
 from homeassistant.const import (STATE_OFF, STATE_ON, POWER_WATT)
 from homeassistant.components.switch import SwitchDevice
@@ -51,7 +52,7 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
         name = hass.data[DOMAIN]['switch']['name'][i]
         if sid not in hass.data[DOMAIN]['power']:
             hass.data[DOMAIN]['power'][sid]={"power":None,"yesterday":None,"power_consum":None}
-        w_sensor=XiaomiGatewaySensorW(hass[DOMAIN]['power'][sid],device, name + '.power', sid)
+        w_sensor=XiaomiGatewaySensorW(hass.data[DOMAIN]['power'][sid],device, name + '.power', sid)
         devices.append(w_sensor)
         devices.append(XiaomiGatewaySwitch(hass.data[DOMAIN]['power'][sid],device, name, sid, 'channel_0', w_sensor))
         devices.append(XiaomiGatewaySwitch(hass.data[DOMAIN]['power'][sid],device, name, sid, 'channel_1', w_sensor))
@@ -175,7 +176,7 @@ class XiaomiGatewaySwitch(SwitchDevice):
             elif result[0][0] == 'off':
                 self._state=False
             if self._w_sensor is not None:
-                self._w_sensor.async_update()
+                await self._w_sensor.async_update()
                 self._power = self._w_sensor.state
                 self._power_consumed = self._data['power_consum']
 
@@ -232,7 +233,7 @@ class XiaomiGatewaySensorW(Entity):
             self._state=result[0][0]
             today = datetime.datetime.now()
             delta = today - self._data['yesterday']
-            self._data['power_consum'] = round((data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
+            self._data['power_consum'] = round((self._data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
             self._data['power'] = self._state
             self._data['yesterday'] = today
             POWER=self._state
