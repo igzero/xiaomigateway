@@ -206,7 +206,7 @@ def async_setup(hass, config):
 # Else choise opened socket
                             hass.data[DOMAIN]['light']['device'].append(light_device)
                     except DeviceException as light_exc:
-                        _LOGGER.error("Error open socket:",light_exc)
+                        _LOGGER.error("Error open socket for light:",light_exc)
                 i = i + 1
 
 # List of Switch
@@ -232,13 +232,28 @@ def async_setup(hass, config):
                     if components.count('switch') == 0:
                         _LOGGER.debug("Add Aqara Relay %s",sid)
                         components.append('switch')
+# Add sid
                     hass.data[DOMAIN]['switch']['sid'].append(sid)
                     name = config[DOMAIN]['switch'][i].get(CONF_NAME,None)
+# Add name
                     if name is None:
                         name = DEFAULT_NAME_SWITCH + "." + sid
                     if hass.data[DOMAIN]['switch']['name'].count(name) > 0:
                         name = name + "." + sid
                     hass.data[DOMAIN]['switch']['name'].append(name)
+# Create socket for each switch
+                    try:
+                        switch_device = Device(host, token)
+                        switch_info = switch_device.info()
+                        if switch_info is None:
+# If socket not open, choise first opened socket (miio_device)
+                            _LOGGER.error("Device not ready")
+                            hass.data[DOMAIN]['switch']['device'].append(miio_device)
+                        else:
+# Else choise opened socket
+                            hass.data[DOMAIN]['switch']['device'].append(switch_device)
+                    except DeviceException as switch_exc:
+                        _LOGGER.error("Error open socket for switch:",switch_exc)
                 i = i + 1
 
 # Radio
