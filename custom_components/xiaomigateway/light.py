@@ -7,7 +7,6 @@ import voluptuous as vol
 import asyncio
 
 from homeassistant.components.light import (
-    ATTR_OPERATION_MODE,
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP,
     ATTR_ENTITY_ID,
@@ -109,8 +108,6 @@ class XiaomiGatewayLight(Light):
 
     async def async_turn_on(self, **kwargs):
         """Instruct the light to turn on."""
-        if ATTR_OPERATION_MODE in kwargs:
-            _LOGGER.info("MODE %s",str(kwargs[ATTR_OPERATION_MODE]))
 
         if self._state == False:
             result = await self._try_command(
