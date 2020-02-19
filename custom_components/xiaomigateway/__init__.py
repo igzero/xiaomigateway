@@ -89,7 +89,7 @@ ATTR_HARDWARE_VERSION = 'hardware_version'
 _LOGGER = logging.getLogger(__name__)
 
 ZNLDP12LM = 66
-LLRZMK11LM = 54
+LLKZMK11LM = 54
 
 @asyncio.coroutine
 def async_setup(hass, config):
@@ -150,7 +150,7 @@ def async_setup(hass, config):
         for i in range(cnt):
             if type(sid_list[i]) == str and len(sid_list[i]) > 5:
                 if sid_list[i][:5] == 'lumi.':
-                    if sid_list[i+1] == LLRZMK11LM or sid_list[i+1] == ZNLDP12LM:
+                    if sid_list[i+1] == LLKZMK11LM or sid_list[i+1] == ZNLDP12LM:
                         hass.data[DOMAIN]['sid'].append(sid_list[i])
         hass.data[DOMAIN]['device'] = miio_device
 
