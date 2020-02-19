@@ -26,7 +26,7 @@ To enable "xiaomigateway" in your installation, the following instruction must b
 
    Lifehack: 
        In order not to apply this patch, after each system update, place copy the patched  PYTHON-MIIO package in the directory
-       /config (this is the directory where your configuration file for HOMEASSISTANT (configuration.yaml) is located)
+       /config (this is the directory where your configuration file for HOMEASSISTANT (configuration.yaml) is located.
        The PYTHON-MIIO library will be loaded from the /config directory after the HOMEASSISTANT reboot
 
        General case:
