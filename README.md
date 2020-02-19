@@ -12,8 +12,7 @@ Allows you to manage the following devices connected to the XiaomiGateway:
   '"method":'play_specify_fm' "params": {"id": xxx,"type": 0,"url":"http://your_arbitrary_link/file.m3u8"'
   The command is perceived, but the stream is not played. This capability is left, but performance is not guaranteed.
 
-# UPD: 
-# Automatic device inspection (ZNLDP12LM and LLRZMK11LM only)
+UPD: Automatic device inspection (ZNLDP12LM and LLRZMK11LM only)
 
 To enable "xiaomigateway" in your installation, the following instruction must be followed:
 1. Patch the python-miio (file device.py).
