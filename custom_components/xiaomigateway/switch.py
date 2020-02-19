@@ -38,6 +38,7 @@ _LOGGER = logging.getLogger(__name__)
 
 POWER=0.0
 
+
 @asyncio.coroutine
 def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     """Setup the Aqra LED Bulb."""
@@ -83,17 +84,16 @@ class XiaomiGatewaySwitch(SwitchDevice):
 # supports_power_consumption
         _LOGGER.info("Start Aqara Relay name: %s sid: %s",self._name, self._sid)
 
-    async def _try_command(self, mask_error, func, *args, **kwargs):
+    async def _try_command(self, func, *args, **kwargs):
         """Call a device command handling error messages."""
         from miio import DeviceException
         try:
             result = await self.hass.async_add_job(
                 partial(func, *args, **kwargs))
-
-            return result[0] == "ok"
+            return result
         except DeviceException as exc:
-            _LOGGER.error(mask_error, exc)
-            return False
+            _LOGGER.error("Error send command %s",args,exc)
+            return []
 
     @property
     def icon(self):
@@ -138,9 +138,9 @@ class XiaomiGatewaySwitch(SwitchDevice):
     async def async_turn_on(self, **kwargs):
         """Turn the switch on."""
         result = await self._try_command(
-            "Turning the Aqara Relay on failed.", self._device.send,
+            self._device.send,
             'toggle_ctrl_neutral', [self._channel,'on'],self._sid)
-        if result:
+        if result[0] == "ok":
             self._state = True
             self.async_schedule_update_ha_state()
 
@@ -149,9 +149,9 @@ class XiaomiGatewaySwitch(SwitchDevice):
         if self._state is not None:
             toggle = self._state
             result = await self._try_command(
-                "Turning the Aqara Relay toggle failed.", self._device.send,
+                self._device.send,
                 'toggle_ctrl_neutral', [self._channel,'toggle'],self._sid)
-            if result:
+            if result[0] == "ok"
                 if toggle:
                     self._state = False
                 else:
@@ -161,9 +161,9 @@ class XiaomiGatewaySwitch(SwitchDevice):
     async def async_turn_off(self, **kwargs):
         """Turn the switch off."""
         result = await self._try_command(
-            "Turning the Aqara Relay off failed.", self._device.send,
+            self._device.send,
             'toggle_ctrl_neutral', [self._channel,'off'],self._sid)
-        if result:
+        if result[0] == "ok":
             self._state = False
             self.async_schedule_update_ha_state()
 
@@ -171,12 +171,14 @@ class XiaomiGatewaySwitch(SwitchDevice):
         """Get data from hub."""
         from miio import DeviceException
         try:
-            result = await self.hass.async_add_job(
-                self._device.send, 'get_device_prop_exp', [[self._sid, self._channel]])
-            if result[0][0] == 'on':
-                self._state=True
-            elif result[0][0] == 'off':
-                self._state=False
+            result = await self._try_command(
+                self._device.send,
+                'get_device_prop_exp',[[self._sid, self._channel]])
+            if result[0] is not None:
+                if result[0][0] == 'on':
+                    self._state=True
+                elif result[0][0] == 'off':
+                    self._state=False
             if self._w_sensor is not None:
                 await self._w_sensor.async_update()
                 self._power = self._w_sensor.state
@@ -231,15 +233,16 @@ class XiaomiGatewaySensorW(Entity):
 
         try:
             result = await self.hass.async_add_job(
-                self._device.send, 'get_device_prop_exp', [[self._sid, "load_power"]])
-            self._state=result[0][0]
-            today = datetime.datetime.now()
-            delta = today - self._data['yesterday']
-            self._data['power_consum'] = round((self._data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
-            self._data['power'] = self._state
-            self._data['yesterday'] = today
-            POWER=self._state
-            _LOGGER.debug("Sensor POWER %.2f",POWER)
+                partial(self._device.send, 'get_device_prop_exp', [[self._sid, "load_power"]]))
+            if result[0] is not None:
+                self._state=result[0][0]
+                today = datetime.datetime.now()
+                delta = today - self._data['yesterday']
+                self._data['power_consum'] = round((self._data['power_consum'] + float(self._data['power']*delta.seconds/3600)),2)
+                self._data['power'] = self._state
+                self._data['yesterday'] = today
+                POWER=self._state
+                _LOGGER.debug("Sensor POWER %.2f",POWER)
         except DeviceException as ex:
-            _LOGGER.error("Got exception while fetching the state: %s", ex)
+            _LOGGER.error("Got exception while fetching the state", ex)
 

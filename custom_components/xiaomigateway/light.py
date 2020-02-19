@@ -7,6 +7,7 @@ import voluptuous as vol
 import asyncio
 
 from homeassistant.components.light import (
+    ATTR_OPERATION_MODE,
     ATTR_BRIGHTNESS,
     ATTR_COLOR_TEMP,
     ATTR_ENTITY_ID,
@@ -65,18 +66,17 @@ class XiaomiGatewayLight(Light):
         self._color_temp = None
         _LOGGER.info("Start Aqara LED Bulb name: %s sid: %s",self._name, self._sid)
 
-    async def _try_command(self, mask_error, func, *args, **kwargs):
+    async def _try_command(self, func, *args, **kwargs):
         """Call a device command handling error messages."""
         from miio import DeviceException
         try:
+            result = []
             result = await self.hass.async_add_job(
                 partial(func, *args, **kwargs))
-
-            return result[0] == "ok"
+            return result
         except DeviceException as exc:
-            _LOGGER.error(mask_error, exc)
-            return False
-
+            _LOGGER.error("Error exec %s", args, exc)
+            return []
 
     @property
     def name(self):
@@ -109,11 +109,14 @@ class XiaomiGatewayLight(Light):
 
     async def async_turn_on(self, **kwargs):
         """Instruct the light to turn on."""
+        if ATTR_OPERATION_MODE in kwargs:
+            _LOGGER.info("MODE %s",str(kwargs[ATTR_OPERATION_MODE]))
+
         if self._state == False:
             result = await self._try_command(
-                "Turning the Aqara Lamp on failed.", self._device.send,
+                self._device.send,
                 'set_power', ['on'],self._sid)
-            if result:
+            if result[0] == "ok":
                 self._state = True
 
         if ATTR_COLOR_TEMP in kwargs:
@@ -121,37 +124,37 @@ class XiaomiGatewayLight(Light):
             cct = self.convert(color_temp)
             _LOGGER.debug("CCT %d",cct)
             result = await self._try_command(
-                "Turning the Aqara Lamp CCT failed.", self._device.send,
+                self._device.send,
                 'set_ct', [cct],self._sid)
-            if result:
+            if result[0] == "ok":
                 self._color_temp = color_temp
 
         if ATTR_BRIGHTNESS in kwargs:
             brightness = kwargs[ATTR_BRIGHTNESS]
             brightness = ceil((brightness * 100) / 255)
             result = await self._try_command(
-                "Turning the Aqara Lamp brightness failed.", self._device.send,
+                self._device.send,
                 'set_bright', [brightness],self._sid)
-            if result:
+            if result[0] == "ok":
                 brightness = 0
-#                result = await self.hass.async_add_job(
-#                    self._device.send, 'get_bright', None, self._sid)
-                result = self._device.send('get_bright', None, self._sid)
-
-                brightness = result[0]
-                if brightness > 0 and brightness <= 100:
-                    self._brightness = ceil((brightness * 255) / 100)
-                    self._state = True
-                else:
-                    self._state = False
+                result = await self._try_command(
+                    self._device.send,
+                    'get_bright', None ,self._sid)
+                if result[0] is not None:
+                    brightness = result[0]
+                    if brightness > 0 and brightness <= 100:
+                        self._brightness = ceil((brightness * 255) / 100)
+                        self._state = True
+                    else:
+                        self._state = False
         self.async_schedule_update_ha_state(True)
 
     async def async_turn_off(self, **kwargsf):
         """Instruct the light to turn off."""
         result = await self._try_command(
-            "Turning the Aqara Lamp off failed.", self._device.send,
+            self._device.send,
             'set_power', ['off'],self._sid)
-        if result:
+        if result[0] == "ok":
             self._state = False
             self.async_schedule_update_ha_state(True)
 
@@ -164,24 +167,17 @@ class XiaomiGatewayLight(Light):
         Fetch new state data for this light.
         This is the only method that should fetch new data for Home Assistant.
         """
-
-        from miio import DeviceException
-
-        try:
-            bright = 0
-            result = await self.hass.async_add_job(
-                self._device.send, 'get_bright', None, self._sid)
-
-            bright = result[0]
-            if bright > 0 and bright <= 100:
-                self._brightness = ceil((bright * 255) / 100)
+        brightness = 0
+        result = await self._try_command(
+            self._device.send,
+            'get_bright', None ,self._sid)
+        if result[0] is not None:
+            brightness = result[0]
+            if brightness > 0 and brightness <= 100:
+                self._brightness = ceil((brightness * 255) / 100)
                 self._state = True
             else:
                 self._state = False
-
-        except DeviceException as ex:
-            self._available = False
-            _LOGGER.error("Got exception while fetching the state: %s", ex)
 
     @staticmethod
     def convert(value):
