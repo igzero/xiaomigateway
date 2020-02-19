@@ -5,6 +5,7 @@ import homeassistant.helpers.config_validation as cv
 import logging
 import voluptuous as vol
 import asyncio
+import datetime
 
 from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
@@ -60,9 +61,10 @@ class XiaomiGatewayLight(Light):
         self._device = device
         self._name = name
         self._sid = sid
-        self._state = False
+        self._state = None
         self._brightness = None
         self._color_temp = None
+
         _LOGGER.info("Start Aqara LED Bulb name: %s sid: %s",self._name, self._sid)
 
     async def _try_command(self, func, *args, **kwargs):
@@ -125,6 +127,7 @@ class XiaomiGatewayLight(Light):
                 'set_ct', [cct],self._sid)
             if result[0] == "ok":
                 self._color_temp = color_temp
+                self._state = True
 
         if ATTR_BRIGHTNESS in kwargs:
             brightness = kwargs[ATTR_BRIGHTNESS]
@@ -153,7 +156,7 @@ class XiaomiGatewayLight(Light):
             'set_power', ['off'],self._sid)
         if result[0] == "ok":
             self._state = False
-            self.async_schedule_update_ha_state(True)
+        self.async_schedule_update_ha_state(True)
 
     def set_color_temp(self, level, transition=0):
         """Set color temp in kelvin."""
@@ -174,7 +177,11 @@ class XiaomiGatewayLight(Light):
                 self._brightness = ceil((brightness * 255) / 100)
                 self._state = True
             else:
+                self._brightness = 0
                 self._state = False
+        else:
+            self._brightness = 0
+            self._state = False
 
     @staticmethod
     def convert(value):

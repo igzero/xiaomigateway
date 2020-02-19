@@ -88,6 +88,9 @@ ATTR_HARDWARE_VERSION = 'hardware_version'
 
 _LOGGER = logging.getLogger(__name__)
 
+ZNLDP12LM = 66
+LLRZMK11LM = 54
+
 @asyncio.coroutine
 def async_setup(hass, config):
 #def setup(hass, config):
@@ -144,25 +147,14 @@ def async_setup(hass, config):
         sid_list=[]
         sid_list=miio_device.send('get_device_prop',['lumi.0','device_list'])
         cnt=len(sid_list)
-        i=0
-        while i < cnt:
-            buf=[]
-            buf=str(sid_list[i])
-            if len(buf) < 6:
-                sid_list.pop(i)
-                cnt = cnt - 1
-            else:
-                buf=buf[:5]
-                if buf != 'lumi.':
-                    sid_list.pop(i)
-                    cnt = cnt - 1
-                else:
-                    i = i + 1
+        for i in range(cnt):
+            if type(sid_list[i]) == str and len(sid_list[i]) > 5:
+                if sid_list[i][:5] == 'lumi.':
+                    if sid_list[i+1] == LLRZMK11LM or sid_list[i+1] == ZNLDP12LM:
+                        hass.data[DOMAIN]['sid'].append(sid_list[i])
         hass.data[DOMAIN]['device'] = miio_device
-        hass.data[DOMAIN]['sid']=[]
 
-        for sid in sid_list:
-            hass.data[DOMAIN]['sid'].append(sid)
+        _LOGGER.info("SID list %s",hass.data[DOMAIN]['sid'])
 
 # Create list of load components
         components=[]
