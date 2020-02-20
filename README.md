@@ -40,7 +40,7 @@ To enable "xiaomigateway" in your installation, the following instruction must b
        \# exit
        docker restart homeassistant
 
-2. Copy directory "xiaomigateway" to you custom_component directory
+2. Copy directory "xiaomigateway" to you custom_components directory
 3. Add to your configuration.yaml file:
 
 == configuration.yaml ==
