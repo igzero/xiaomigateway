@@ -171,9 +171,9 @@ def async_setup(hass, config):
                     sid = "lumi." + sid
                 _LOGGER.debug("Light SID: %s Count: %d",sid,hass.data[DOMAIN]['sid'].count(sid))
                 if hass.data[DOMAIN]['sid'].count(sid) == 1:
-                    if sid[:14] != "lumi.158d0003e":
-                        _LOGGER.error("Sid %s is not Aqara LED Bulb")
-                        continue
+#                    if sid[:14] != "lumi.158d0003e":
+#                        _LOGGER.error("Sid %s is not Aqara LED Bulb")
+#                        continue
                     if components.count('light') == 0:
                         _LOGGER.debug("Add Aqara LED Bulb %s",sid)
                         components.append('light')
@@ -213,9 +213,9 @@ def async_setup(hass, config):
                 _LOGGER.debug("Switch SID: %s Count: %d",sid,hass.data[DOMAIN]['sid'].count(sid))
                 if hass.data[DOMAIN]['sid'].count(sid) == 1:
                     _LOGGER.debug("Check Switch")
-                    if sid[:14] != "lumi.158d0003c":
-                        _LOGGER.error("Sid %s is not Aqara Relay")
-                        continue
+#                    if sid[:14] != "lumi.158d0003c":
+#                        _LOGGER.error("Sid %s is not Aqara Relay")
+#                        continue
                     result=miio_device.send('get_device_prop_exp',[[sid,'load_power']])
                     load_power = result[0][0]
                     if load_power < 0.0:
