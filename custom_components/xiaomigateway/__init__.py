@@ -144,6 +144,7 @@ def async_setup(hass, config):
             _LOGGER.error("Device not ready")
             return False
 
+        typedev=[]
         sid_list=[]
         sid_list=miio_device.send('get_device_prop',['lumi.0','device_list'])
         cnt=len(sid_list)
@@ -152,6 +153,7 @@ def async_setup(hass, config):
                 if sid_list[i][:5] == 'lumi.':
                     if sid_list[i+1] == LLKZMK11LM or sid_list[i+1] == ZNLDP12LM:
                         hass.data[DOMAIN]['sid'].append(sid_list[i])
+                        typedev.append(sid_list[i+1])
         hass.data[DOMAIN]['device'] = miio_device
 
         _LOGGER.info("SID list %s",hass.data[DOMAIN]['sid'])
@@ -171,9 +173,10 @@ def async_setup(hass, config):
                     sid = "lumi." + sid
                 _LOGGER.debug("Light SID: %s Count: %d",sid,hass.data[DOMAIN]['sid'].count(sid))
                 if hass.data[DOMAIN]['sid'].count(sid) == 1:
-#                    if sid[:14] != "lumi.158d0003e":
-#                        _LOGGER.error("Sid %s is not Aqara LED Bulb")
-#                        continue
+                    idx=hass.data[DOMAIN]['sid'].index(sid)
+                    if typedev[idx] != ZNLDP12LM:
+                        _LOGGER.error("Sid %s is not Aqara LED Bulb")
+                        continue
                     if components.count('light') == 0:
                         _LOGGER.debug("Add Aqara LED Bulb %s",sid)
                         components.append('light')
@@ -213,9 +216,10 @@ def async_setup(hass, config):
                 _LOGGER.debug("Switch SID: %s Count: %d",sid,hass.data[DOMAIN]['sid'].count(sid))
                 if hass.data[DOMAIN]['sid'].count(sid) == 1:
                     _LOGGER.debug("Check Switch")
-#                    if sid[:14] != "lumi.158d0003c":
-#                        _LOGGER.error("Sid %s is not Aqara Relay")
-#                        continue
+                    idx=hass.data[DOMAIN]['sid'].index(sid)
+                    if typedev[idx] != LLKZMK11LM:
+                        _LOGGER.error("Sid %s is not Aqara Relay")
+                        continue
                     result=miio_device.send('get_device_prop_exp',[[sid,'load_power']])
                     load_power = result[0][0]
                     if load_power < 0.0:
