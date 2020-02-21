@@ -82,10 +82,10 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             result = await self.hass.async_add_job(
                 partial(func, *args, **kwargs))
             _LOGGER.debug("Response received from Gateway: %s", result)
-            return result[0] == "ok"
+            return result
         except DeviceException as exc:
             _LOGGER.error(mask_error, exc)
-            return False
+            return []
 
     @property
     def device_class(self):
@@ -136,7 +136,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
         result = await self._try_command(
             "Turning the Gateway off failed.", self._device.send,
             'play_fm', ['off'])
-        if result:
+        if result[0] == "ok":
             self._state = STATE_OFF
             self.async_schedule_update_ha_state()
 
@@ -155,7 +155,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             result = await self._try_command(
                 "Turning the Gateway on failed.", self._device.send,
                 'play_fm', ['on'])
-        if result:
+        if result[0] == "ok":
             self._state = STATE_ON
             self.async_schedule_update_ha_state()
 
@@ -176,7 +176,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
                 result = await self._try_command(
                     "Turning the Gateway on failed.", self._device.send,
                     'play_specify_fm', {"id":self._program,"url":self._url,"type":0})
-            if result:
+            if result[0] == "ok":
                 self._state = STATE_ON
                 self.async_schedule_update_ha_state()
         else:
@@ -191,7 +191,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             result = await self._try_command(
                 "Turning the Gateway volume failed.", self._device.send,
                 'set_fm_volume', [volume])
-            if result:
+            if result[0] == "ok":
                 self.async_schedule_update_ha_state()
 
     async def volume_down(self):
@@ -202,7 +202,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             result = await self._try_command(
                 "Turning the Gateway volume failed.", self._device.send,
                 'set_fm_volume', [volume])
-            if result:
+            if result[0] == "ok":
                 self.async_schedule_update_ha_state()
 
     async def media_next_track(self):
@@ -230,7 +230,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             result = await self._try_command(
                 "Turning the Gateway next failed.", self._device.send,
                 'play_specify_fm', {"id":self._program,"url":self._url,"type":0})
-        if result:
+        if result[0] == "ok":
             self.async_schedule_update_ha_state()
 
     async def media_previous_track(self):
@@ -258,7 +258,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
             result = await self._try_command(
                 "Turning the Gateway prev failed.", self._device.send,
                 'play_specify_fm', {"id":self._program,"url":self._url,"type":0})
-        if result:
+        if result[0] == "ok":
             self.async_schedule_update_ha_state()
 
     async def set_volume_level(self, volume):
@@ -266,7 +266,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
         result = await self._try_command(
             "Setting the Gateway volume failed.", self._device.send,
             'set_fm_volume', [volset])
-        if result:
+        if result[0] == "ok":
             self.async_schedule_update_ha_state()
 
     async def mute_volume(self, mute):
@@ -284,7 +284,7 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
         result = await self._try_command(
             "Turning the Gateway volume failed.", self._device.send,
             'set_fm_volume', [volume])
-        if result:
+        if result[0] == "ok":
             if volume == 0:
                 self._muted = True
             else:
@@ -293,11 +293,9 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
 
     async def async_update(self):
         """Fetch state from Gateway."""
-        from miio import DeviceException
-
-        try:
-            result = await self.hass.async_add_job(
-                self._device.send, 'get_prop_fm', '')
+        result = await self._try_command("Get FM Radio status failed.",
+            self._device.send, 'get_prop_fm', '')
+        if result:
             _LOGGER.debug("Got new state: %s", result)
             program = result.pop('current_program')
             volume = result.pop('current_volume')
@@ -338,9 +336,9 @@ class XiaomiGatewayRadio(MediaPlayerDevice,Entity):
                     state, 'pause', 'run')
                 self._state = None
             self._state_attrs.update({
-                ATTR_STATE_VALUE: state
-            })
+                    ATTR_STATE_VALUE: state
+                })
 
-        except DeviceException as ex:
+        else:
             self._available = False
-            _LOGGER.error("Got exception while fetching the state: %s", ex)
+            _LOGGER.error("Not get state FM Radio")
