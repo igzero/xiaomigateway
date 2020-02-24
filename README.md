@@ -45,7 +45,9 @@ To enable "xiaomigateway" in your installation, the following instruction must b
 
 == configuration.yaml ==
 
+
 xiaomigateway:
+
     host: 192.168.0.1
     token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         light:
