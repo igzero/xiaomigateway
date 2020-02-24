@@ -50,32 +50,32 @@ xiaomigateway:
     host: 192.168.0.1
     token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     
-    light:
-      - sid: lumi.158d0003e99991
-        name: LightName
+        light:
+          - sid: lumi.158d0003e99991
+            name: LightName
         
-    switch:
-      - sid: lumi.158d0003c99991
-        name: RelayName
+        switch:
+          - sid: lumi.158d0003c99991
+            name: RelayName
         
-    media_player:
-        name: FmRadioName
-        source_list: [
-                Ретро FM,
-                Детское радио,
-                Дорожное радио,
-                Радио Energy,
-                Европа Плюс,
-                Авторадио
-            ]
-        program_list: [
-                [527782001],
-                [527782002],
-                [527782003],
-                [527782004],
-                [527782005],
-                [1023,"http:\/\/192.168.0.254\/527782006.m3u8"]
-            ]
+        media_player:
+            name: FmRadioName
+            source_list: [
+                    Ретро FM,
+                    Детское радио,
+                    Дорожное радио,
+                    Радио Energy,
+                    Европа Плюс,
+                    Авторадио
+                ]
+            program_list: [
+                    [527782001],
+                    [527782002],
+                    [527782003],
+                    [527782004],
+                    [527782005],
+                    [1023,"http:\/\/192.168.0.254\/527782006.m3u8"]
+                ]
             
 == End configuration.yaml ==
 
