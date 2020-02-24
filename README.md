@@ -46,18 +46,14 @@ To enable "xiaomigateway" in your installation, the following instruction must b
 == configuration.yaml ==
 
 xiaomigateway:
-
     host: 192.168.0.1
     token: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    
         light:
           - sid: lumi.158d0003e99991
             name: LightName
-        
         switch:
           - sid: lumi.158d0003c99991
             name: RelayName
-        
         media_player:
             name: FmRadioName
             source_list: [
