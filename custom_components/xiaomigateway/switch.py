@@ -56,8 +56,8 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
             hass.data[DOMAIN]['power'][sid]={"power":None,"yesterday":None,"power_consum":None}
         w_sensor=XiaomiGatewaySensorW(hass.data[DOMAIN]['power'][sid],device, name + '.power', sid)
         devices.append(w_sensor)
-        devices.append(XiaomiGatewaySwitch(hass.data[DOMAIN]['power'][sid],device, name, sid, 'channel_0', w_sensor))
-        devices.append(XiaomiGatewaySwitch(hass.data[DOMAIN]['power'][sid],device, name, sid, 'channel_1', w_sensor))
+        devices.append(XiaomiGatewaySwitch(hass.data[DOMAIN]['power'][sid],device, f"{name}_l1", sid, 'channel_0', w_sensor))
+        devices.append(XiaomiGatewaySwitch(hass.data[DOMAIN]['power'][sid],device, f"{name}_l2", sid, 'channel_1', w_sensor))
         devices.append(XiaomiGatewayLight(device, name, sid))
         i = i + 1
     if len(devices) > 0:
